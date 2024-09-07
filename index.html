@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+            background-color: white;
+            color: black;
+        }
+        body.dark-mode {
+            background-color: #222;
+            color: white;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        #integral, #solution {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: transparent;
+            color: black;
+            border: 2px solid black;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 20px;
+        }
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+        .dark-mode button {
+            color: white;
+            border-color: white;
+        }
+        .dark-mode button:hover {
+            background-color: white;
+            color: #222;
+        }
+        #mode-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+        #mode-toggle img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <button id="mode-toggle" onclick="toggleDarkMode()">
+        <img src="black.png" alt="Dark Mode">
+    </button>
+    <h1>Solve this integral</h1>
+    <div id="integral"></div>
+    <div>
+        <button onclick="nextIntegral()">Next</button>
+        <button onclick="showSolution()">Solution</button>
+    </div>
+    <div id="solution"></div>
+
+    <script>
+        const integrals = [
+            '\\int x^2 dx',
+            '\\int \\sin x dx',
+            '\\int e^x dx',
+            '\\int \\frac{1}{x} dx',
+            '\\int \\cos x dx'
+        ];
+        const solutions = [
+            '\\frac{x^3}{3} + C',
+            '-\\cos x + C',
+            'e^x + C',
+            '\\ln|x| + C',
+            '\\sin x + C'
+        ];
+        let currentIndex = 0;
+
+        function updateIntegral() {
+            document.getElementById('integral').innerHTML = '\\[' + integrals[currentIndex] + '\\]';
+            document.getElementById('solution').innerHTML = '';
+            typeset(() => [document.getElementById('integral')]);
+        }
+
+        function nextIntegral() {
+            currentIndex = (currentIndex + 1) % integrals.length;
+            updateIntegral();
+        }
+
+        function showSolution() {
+            document.getElementById('solution').innerHTML = '\\[' + solutions[currentIndex] + '\\]';
+            typeset(() => [document.getElementById('solution')]);
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            updateDarkModeIcon();
+        }
+
+        function updateDarkModeIcon() {
+            const modeToggleImg = document.querySelector('#mode-toggle img');
+            if (document.body.classList.contains('dark-mode')) {
+                modeToggleImg.src = 'white.png';
+            } else {
+                modeToggleImg.src = 'black.png';
+            }
+        }
+
+        // Disable right-click for the entire document
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        }, true);
+
+        // Disable right-click for MathJax elements
+        function disableMathJaxRightClick() {
+            const mathJaxElements = document.getElementsByClassName('MathJax');
+            for (let element of mathJaxElements) {
+                element.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    return false;
+                }, true);
+            }
+        }
+
+        // MathJax configuration to disable menu and right-click
+        window.MathJax = {
+            menuSettings: {
+                context: "Browser"
+            },
+            options: {
+                enableMenu: false
+            }
+        };
+
+        // Wait for MathJax to finish rendering, then disable right-click
+        function typeset(code) {
+            MathJax.typesetPromise(code()).then(() => {
+                disableMathJaxRightClick();
+            }).catch((err) => console.log(err.message));
+        }
+
+        updateIntegral();
+    </script>
+</body>
+</html>
