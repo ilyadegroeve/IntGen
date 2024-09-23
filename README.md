@@ -1,5 +1,4 @@
-# intgen
-Interactive tool for solving integrals. 
+# Interactive tool for solving integrals. 
 
 
 
