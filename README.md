@@ -1,2 +1,2 @@
 # intgen
-excercise integrals 
+excercise integrals at intgen.pages.dev
