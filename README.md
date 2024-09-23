@@ -1,2 +1,8 @@
 # intgen
-excercise integrals at intgen.pages.dev
+Interactive tool for solving integrals. 
+
+
+
+
+
+
